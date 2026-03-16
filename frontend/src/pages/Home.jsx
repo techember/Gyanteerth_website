@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <div className="home-page animate-fade-in">
       <Helmet>
-        <title>GYANTEERTH | Shiksha Evam Kalyan Sansthan</title>
+        <title>GyanTeerth NGO | Foundation for Education & Welfare</title>
         <meta name="description" content="GYANTEERTH Shiksha Evam Kalyan Sansthan is committed to social welfare, education, healthcare, and community impact in Gwalior and beyond." />
         <meta name="keywords" content="NGO, Gwalior, Social Welfare, Community Impact, GYANTEERTH, Shiksha Sansthan" />
       </Helmet>
