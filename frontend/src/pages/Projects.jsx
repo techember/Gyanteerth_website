@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Award, ArrowRight, MapPin } from 'lucide-react';
+import { staticProjects } from '../data/staticData';
 import './Pages.css';
 
 const Projects = () => {
@@ -12,7 +13,7 @@ const Projects = () => {
     fetch('http://localhost:5000/api/projects')
       .then(res => res.json())
       .then(data => {
-        setProjects(data);
+        setProjects(data.length > 0 ? data : staticProjects);
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
@@ -30,7 +31,7 @@ const Projects = () => {
       ) : (
         <div className="projects-grid">
           {projects.map((project) => (
-            <div className="card project-card" key={project.id} onClick={() => navigate(`/projects/${project.id}`)} style={{ cursor: 'pointer' }}>
+            <div className="card project-card" key={project._id || project.id} onClick={() => navigate(`/projects/${project._id || project.id}`)} style={{ cursor: 'pointer' }}>
               <div className="project-image" style={{backgroundImage: `url(${project.image || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800'})`}}>
                 <span className={`project-status-badge ${project.status?.toLowerCase() || 'ongoing'}`}>{project.status || 'Ongoing'}</span>
               </div>

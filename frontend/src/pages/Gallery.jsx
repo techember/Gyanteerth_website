@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Maximize2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { staticGallery } from '../data/staticData';
 import './Pages.css';
 
 const Gallery = () => {
@@ -85,9 +86,10 @@ const Gallery = () => {
         // Remove duplicates based on URL
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.url, item])).values());
         
-        setItems(uniqueItems);
+        setItems(uniqueItems.length > 0 ? uniqueItems : staticGallery);
       } catch (err) {
         console.error('Failed to fetch media data', err);
+        setItems(staticGallery);
       } finally {
         setLoading(false);
       }
@@ -134,7 +136,11 @@ const Gallery = () => {
         <div className="gallery-grid">
           {filteredItems.map((item, idx) => (
             <div key={item.id} className="gallery-item" onClick={() => setLightboxIndex(idx)}>
-              <img src={item.url} alt={item.project} loading="lazy" />
+              {item.url.toLowerCase().endsWith('.mp4') ? (
+                <video src={item.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted preload="metadata" />
+              ) : (
+                <img src={item.url} alt={item.project} loading="lazy" />
+              )}
               <div className="gallery-overlay">
                 <div style={{ transform: 'translateY(10px)', transition: 'transform 0.3s', padding: '1rem', textAlign: 'center' }}>
                   <Maximize2 size={32} style={{ marginBottom: '0.5rem' }} />
@@ -157,7 +163,11 @@ const Gallery = () => {
           </button>
           
           <div className="lightbox-content" onClick={e => e.stopPropagation()}>
-            <img src={filteredItems[lightboxIndex].url} alt="Fullscreen View" />
+            {filteredItems[lightboxIndex].url.toLowerCase().endsWith('.mp4') ? (
+              <video src={filteredItems[lightboxIndex].url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+            ) : (
+              <img src={filteredItems[lightboxIndex].url} alt="Fullscreen View" />
+            )}
             <div className="lightbox-counter">
                 <span style={{ color: 'white', fontWeight: 'bold' }}>{filteredItems[lightboxIndex].project}</span> 
                 <span style={{ margin: '0 10px', opacity: 0.5 }}>|</span>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Users, Globe2, Heart, ArrowRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { staticProjects } from '../data/staticData';
 import founderImg from '../assets/founder.png';
 import './Home.css';
 
@@ -87,7 +88,7 @@ const Home = () => {
         </div>
       )}
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero" style={{backgroundImage: `url(${staticProjects.length > 3 ? staticProjects[3].image : '/images/hero.jpg'})`}}>
         <div className="hero-overlay"></div>
         <div className="container hero-content">
           <motion.h1 
@@ -152,24 +153,17 @@ const Home = () => {
         <div className="container">
           <h2 className="section-title">Featured Initiatives</h2>
           <div className="project-grid">
-            <div className="card project-card" onClick={() => navigate('/projects')} style={{cursor: 'pointer'}}>
-              <div className="project-image" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800)'}}></div>
-              <div className="project-content">
-                <span className="project-category">Health & Hygiene</span>
-                <h3>Clean Water Initiative</h3>
-                <p>Providing clean and safe drinking water to over 5,000 families in rural sectors to prevent waterborne diseases.</p>
-                <Link to="/projects" className="btn btn-outline-primary">Read More</Link>
+            {(staticProjects).slice(0, 4).map((project) => (
+              <div className="card project-card" key={project._id} onClick={() => navigate(`/projects/${project._id}`)} style={{cursor: 'pointer'}}>
+                <div className="project-image" style={{backgroundImage: `url(${project.image})`}}></div>
+                <div className="project-content">
+                  <span className="project-category">{project.title}</span>
+                  <h3>{project.title}</h3>
+                  <p>{project.description.substring(0, 120)}...</p>
+                  <Link to="/projects" className="btn btn-outline-primary">Read More</Link>
+                </div>
               </div>
-            </div>
-            <div className="card project-card">
-              <div className="project-image" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800)'}}></div>
-              <div className="project-content">
-                <span className="project-category">Education</span>
-                <h3>Education for All</h3>
-                <p>Running free evening classes and providing necessary school supplies for underprivileged children in urban slums.</p>
-                <Link to="/projects" className="btn btn-outline-primary">Read More</Link>
-              </div>
-            </div>
+            ))}
           </div>
           <div className="text-center mt-3">
             <Link to="/projects" className="btn btn-primary">View All Projects</Link>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, X, Maximize2, Users, Clock, Target, Award } from 'lucide-react';
+import { staticProjects } from '../data/staticData';
 import './Pages.css';
 
 const ProjectDetails = () => {
@@ -14,8 +15,12 @@ const ProjectDetails = () => {
     fetch(`http://localhost:5000/api/projects`)
       .then(res => res.json())
       .then(data => {
-        const found = data.find(p => p.id === parseInt(id));
+        const list = data.length > 0 ? data : staticProjects;
+        const found = list.find(p => p.id === parseInt(id) || p._id === id);
         setProject(found);
+      })
+      .catch(() => {
+        setProject(staticProjects.find(p => p._id === id));
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
@@ -90,7 +95,11 @@ const ProjectDetails = () => {
             <div className="gallery-grid">
               {allImages.map((img, idx) => (
                 <div key={idx} className="gallery-item" onClick={() => setLightboxIndex(idx)}>
-                  <img src={img} alt={`Project ${idx}`} />
+                  {img.toLowerCase().endsWith('.mp4') ? (
+                    <video src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted preload="metadata" />
+                  ) : (
+                    <img src={img} alt={`Project ${idx}`} />
+                  )}
                   <div className="gallery-overlay">
                     <Maximize2 size={24} />
                   </div>
@@ -111,7 +120,11 @@ const ProjectDetails = () => {
           </button>
           
           <div className="lightbox-content" onClick={e => e.stopPropagation()}>
-            <img src={allImages[lightboxIndex]} alt="Fullscreen" />
+            {allImages[lightboxIndex].toLowerCase().endsWith('.mp4') ? (
+              <video src={allImages[lightboxIndex]} controls autoPlay style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+            ) : (
+              <img src={allImages[lightboxIndex]} alt="Fullscreen" />
+            )}
             <div className="lightbox-counter">{lightboxIndex + 1} / {allImages.length}</div>
           </div>
 
